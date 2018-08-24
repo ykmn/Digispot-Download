@@ -1,5 +1,5 @@
 <#
-Download-Digispot.ps1
+Digispot-Download.ps1
 
 Batch dowload Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/Версии_ПО_Digispot
 v1.00 2018-08-24 Initial release

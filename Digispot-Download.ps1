@@ -1,11 +1,31 @@
 <#
-Digispot-Download.ps1
+.NOTES
+    Copyright (c) Roman Ermakov <r.ermakov@emg.fm>
+    Use of this sample source code is subject to the terms of the
+    GNU General Public License under which you licensed this sample source code. If
+    you did not accept the terms of the license agreement, you are not
+    authorized to use this sample source code.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    THIS CODE IS PROVIDED "AS IS" WITH NO WARRANTIES.
+    
+.SYNOPSIS
+    Batch dowload Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/Версии_ПО_Digispot
 
-Batch dowload Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/Версии_ПО_Digispot
-v1.00 2018-08-24 Initial release
+.DESCRIPTION
+    Batch dowload Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/Версии_ПО_Digispot
 
-Roman Ermakov <r.ermakov@emg.fm>
+.LINK
+    https://github.com/ykmn/Digispot-Download
+
+.EXAMPLE
+    .\Digispot-Download.ps1
 #>
+
+<#
+v1.00 2018-08-24 Initial release
+#>
+
 [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8")
 
 Write-Host

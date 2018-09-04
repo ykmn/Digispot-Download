@@ -29,6 +29,7 @@ v1.00 2018-08-24 Initial release
 [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8")
 
 Write-Host
+Write-Host "Digispot-Download"
 Write-Host "Batch download Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/"
 Write-Host "Available versions: 2.15; 2.16.0; 2.16.1; 2.16.2; 2.16.3; 2.17.0"
 

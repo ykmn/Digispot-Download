@@ -35,5 +35,4 @@ v1.00 2018-08-24 Initial release
 2.10 (архив)
 `
 
-[1]: 
-https://redmine.digispot.ru/projects/digispot/wiki/%D0%92%D0%B5%D1%80%D1%81%D0%B8%D0%B8_%D0%9F%D0%9E_Digispot
+[1]: https://redmine.digispot.ru/projects/digispot/wiki/%D0%92%D0%B5%D1%80%D1%81%D0%B8%D0%B8_%D0%9F%D0%9E_Digispot

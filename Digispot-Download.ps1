@@ -29,17 +29,18 @@ v1.00 2018-08-24 Initial release
 [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8")
 
 Write-Host
-Write-Host "Digispot-Download"
+Write-Host "Digispot-Download" -ForegroundColor Yellow
 Write-Host "Batch download Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/"
 Write-Host "Available versions: 2.15; 2.16.0; 2.16.1; 2.16.2; 2.16.3; 2.17.0"
 
-$v = Read-Host -Prompt "Please enter version for download [Press Enter for 2.16.3 or Ctrl+C for exit]"
+$v = Read-Host -Prompt "Please enter version for download [Press Enter for 2.17.0 or Ctrl+C for exit]"
 if (($v -eq $null) -or ($v -eq "")) {
-    $v = "2.16.3"
+    $v = "2.17.0"
 }
 
 Write-Host
 Write-Host "Downloading build" $v
+New-Item -Path $v -Force -ItemType Directory | Out-Null
 
 $v1 = $v.Replace(".","-")
 Write-Host "Changes.html" -BackgroundColor Gray -ForegroundColor Black
@@ -66,5 +67,5 @@ $files = @(
 
 foreach ($file in $files) {
     Write-Host $v $file -BackgroundColor Gray -ForegroundColor Black
-    Invoke-WebRequest http://redmine.digispot.ru/Distributives/$v/$file -OutFile $v"_"$file
+    Invoke-WebRequest http://redmine.digispot.ru/Distributives/$v/$file -OutFile $v\$v"_"$file
 }

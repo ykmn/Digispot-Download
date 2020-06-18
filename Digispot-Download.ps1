@@ -27,6 +27,7 @@ v1.00 2018-08-24 Initial release
 v1.01 2019-80-21 Parsing latest build number from
 	https://redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-3
 	https://redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-17-0
+v1.02 2020-06-18 Different we-page parsing, now Powershell Core compatible
 
 Latest build: http://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
 Specific build: http://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
@@ -36,7 +37,7 @@ Specific build: http://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/d
 [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8")
 [String]$latest = ""
 
-Write-Host "`nDigispot-Download v1.01" -ForegroundColor Yellow
+Write-Host "`nDigispot-Download v1.02" -ForegroundColor Yellow
 Write-Host "Batch download Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/"
 Write-Host "Available versions: 2.16.1, 2.16.2; 2.16.3; 2.17.0"
 
@@ -60,8 +61,8 @@ $webpage = Invoke-WebRequest -Uri https://redmine.digispot.ru/projects/digispot/
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-3
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-2
 
-$pageheaders = @($webpage.ParsedHtml.getElementsByTagName("h2"))
-[string]$latest = $pattern.Matches($pageheaders[0].innerText)
+$pageheaders = @($webpage.Content.split('<') | where {$_ -match '^h2'}) -replace '.*>'
+[string]$latest = $pattern.Matches($pageheaders[0])
 if ($latest -eq "") {
     Write-Host Latest build version is not detected.
     $latest = $v

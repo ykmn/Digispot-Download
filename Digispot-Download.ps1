@@ -27,7 +27,7 @@ v1.00 2018-08-24 Initial release
 v1.01 2019-80-21 Parsing latest build number from
 	https://redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-3
 	https://redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-17-0
-v1.02 2020-06-18 Different we-page parsing, now Powershell Core compatible
+v1.02 2020-06-18 Web-page parsing now Powershell Core compatible
 
 Latest build: http://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
 Specific build: http://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe

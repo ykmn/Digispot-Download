@@ -37,7 +37,7 @@ Specific build: http://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/d
 [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8")
 [String]$latest = ""
 
-Write-Host "`nDigispot-Download v1.02" -ForegroundColor Yellow
+Write-Host "`nDigispot-Download v1.03" -ForegroundColor Yellow
 Write-Host "Batch download Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/"
 Write-Host "Available versions: 2.16.1, 2.16.2; 2.16.3; 2.17.0"
 

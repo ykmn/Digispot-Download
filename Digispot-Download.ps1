@@ -28,7 +28,7 @@ v1.01 2019-80-21 Parsing latest build number from
 	https://redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-3
 	https://redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-17-0
 v1.02 2020-06-18 Web-page parsing now Powershell Core compatible
-
+v1.03 2020-08-03 Some regex cleanup
 Latest build: http://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
 Specific build: http://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
 
@@ -46,10 +46,10 @@ switch ($v) {
     "2.16.1" { $pattern = [Regex]::new('2\.16\.1\.*\d\d+\d?') }
     "2.16.2" { $pattern = [Regex]::new('2\.16\.2\.*\d\d+\d?') } # search for 2.16.2.dd or 2.16.2.ddd
     "2.16.3" { $pattern = [Regex]::new('2\.16\.3\.*\d\d+\d?') }
-    "2.17.0" { $pattern = [Regex]::new('2\.17\.0\.*\d\d+\d?') }
-    $null    { $v = "2.17.0"; $pattern = [Regex]::new('2\.17\.0\.*\d\d+\d?') }
-    ""       { $v = "2.17.0"; $pattern = [Regex]::new('2\.17\.0\.*\d\d+\d?') }
-    DEFAULT  { $v = "2.17.0"; $pattern = [Regex]::new('2\.17\.0\.*\d\d+\d?'); Write-Host "Sorry but $v is not available. Downloading latest 2.17.0" }
+    "2.17.0" { $pattern = [Regex]::new('2\.17\.0\.*?\d{2,3}') }
+    $null    { $v = "2.17.0"; $pattern = [Regex]::new('2\.17\.0\.*?\d{2,3}') }
+    ""       { $v = "2.17.0"; $pattern = [Regex]::new('2\.17\.0\.*?\d{2,3}') }
+    DEFAULT  { $v = "2.17.0"; $pattern = [Regex]::new('2\.17\.0\.*?\d{2,3}'); Write-Host "Sorry but $v is not available. Downloading latest 2.17.0" }
 }
 
 $v1 = $v.Replace(".","-")
@@ -61,8 +61,11 @@ $webpage = Invoke-WebRequest -Uri https://redmine.digispot.ru/projects/digispot/
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-3
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-2
 
-$pageheaders = @($webpage.Content.split('<') | where {$_ -match '^h2'}) -replace '.*>'
-[string]$latest = $pattern.Matches($pageheaders[0])
+$pageheaders = @($webpage.Content.split('<') | Where-Object {$_ -match '^h2'}) -replace '.*>'
+#[string]$latest = $pattern.Matches($pageheaders[0])
+[string]$latest = $pageheaders[0] -match $pattern
+$latest = $Matches[0]
+
 if ($latest -eq "") {
     Write-Host Latest build version is not detected.
     $latest = $v

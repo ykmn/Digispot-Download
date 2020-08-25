@@ -55,13 +55,13 @@ switch ($v) {
 $v1 = $v.Replace(".","-")
 
 Write-Host `nLooking into redmine.digispot.ru/projects/digispot/wiki/$v1
-$webpage = Invoke-WebRequest -Uri https://redmine.digispot.ru/projects/digispot/wiki/%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9_%D0%B2_%D0%BF%D0%BE%D0%BA%D0%BE%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8_$v1
+$url = Invoke-WebRequest -Uri https://redmine.digispot.ru/projects/digispot/wiki/%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9_%D0%B2_%D0%BF%D0%BE%D0%BA%D0%BE%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8_$v1
 
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-17-0
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-3
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-2
 
-$pageheaders = @($webpage.Content.split('<') | Where-Object {$_ -match '^h2'}) -replace '.*>'
+$pageheaders = @($url.Content.split('<') | Where-Object {$_ -match '^h2'}) -replace '.*>'
 #[string]$latest = $pattern.Matches($pageheaders[0])
 [string]$latest = $pageheaders[0] -match $pattern
 $latest = $Matches[0]
@@ -78,12 +78,12 @@ Write-Host `nCreating folder: $latest
 New-Item -Path $latest -Force -ItemType Directory | Out-Null
 
 Write-Host Downloading latest build $latest`:
-$url1 = "https://redmine.digispot.ru/projects/digispot/wiki/%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9_%D0%B2_%D0%BF%D0%BE%D0%BA%D0%BE%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8_"+$v1
+$url = "https://redmine.digispot.ru/projects/digispot/wiki/%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9_%D0%B2_%D0%BF%D0%BE%D0%BA%D0%BE%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8_"+$v1
 Write-Host "Changes_$latest.html" -BackgroundColor Gray -ForegroundColor Black
-Invoke-WebRequest $url1 -OutFile $latest\Changes_$latest.html
-$url1 = "http://redmine.digispot.ru/Distributives/"+$v+"/mdb_update.sql"
-Write-Host $url1 -BackgroundColor Gray -ForegroundColor Black
-Invoke-WebRequest $url1 -OutFile $latest\$latest"_mdb_update.sql"
+Invoke-WebRequest $url -OutFile $latest\Changes_$latest.html
+$url = "http://redmine.digispot.ru/Distributives/"+$v+"/mdb_update.sql"
+Write-Host $url -BackgroundColor Gray -ForegroundColor Black
+Invoke-WebRequest $url -OutFile $latest\$latest"_mdb_update.sql"
 
 $files = @(
     "djinsetup.exe";

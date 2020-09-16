@@ -75,15 +75,18 @@ if ($latest -eq "") {
 
 
 Write-Host `nCreating folder: $latest
-New-Item -Path $latest -Force -ItemType Directory | Out-Null
+New-Item -Path "djin $latest" -Force -ItemType Directory | Out-Null
 
 Write-Host Downloading latest build $latest`:
 $url = "https://redmine.digispot.ru/projects/digispot/wiki/%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9_%D0%B2_%D0%BF%D0%BE%D0%BA%D0%BE%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8_"+$v1
 Write-Host "Changes_$latest.html" -BackgroundColor Gray -ForegroundColor Black
-Invoke-WebRequest $url -OutFile $latest\Changes_$latest.html
+$outfile = "djin "+$latest+"\"+$latest+"_Changes.html"
+Invoke-WebRequest $url -OutFile $outfile
+
 $url = "http://redmine.digispot.ru/Distributives/"+$v+"/mdb_update.sql"
 Write-Host $url -BackgroundColor Gray -ForegroundColor Black
-Invoke-WebRequest $url -OutFile $latest\$latest"_mdb_update.sql"
+$outfile = "djin "+$latest+"\"+$latest+"_mdb_update.sql"
+Invoke-WebRequest $url -OutFile $outfile
 
 $files = @(
     "djinsetup.exe";
@@ -107,5 +110,8 @@ foreach ($file in $files) {
         $url = "http://redmine.digispot.ru/Distributives/"+$v+"/old/"+$latest+"/"+$file
     }
     Write-Host $url -BackgroundColor Gray -ForegroundColor Black
-    Invoke-WebRequest $url -OutFile $latest\$latest"_"$file
+    $outfile = "djin "+$latest+"\"+$latest+"_"+$file
+    Invoke-WebRequest $url -OutFile $outfile
+    Write-Host "Saved to: $outfile"
+
 }

@@ -96,23 +96,24 @@ foreach ($file in $files) {
     Write-Host "Download: " -NoNewline
     Write-Host $url -BackgroundColor Gray -ForegroundColor Black
     $outfile = $folder+"\"+$latest+"_"+$file
-    Invoke-WebRequest $url -OutFile $outfile
+    Invoke-WebRequest $url -OutFile $outfile -Resume
     Write-Host "Saved to: $outfile"
 }
 
 $files = @(
     "djinsetup.exe";
-    "tracksetup.exe";
+    "ddbsetup.exe";
     "mag2setup.exe";
+    "tracksetup.exe";
     "loggersetup.exe";
     "mplansetup.exe";
     "newsbrowsersetup.exe";
-    "ddbsetup.exe";
     "dbimportsetup.exe";
     "LinkIntegrator.exe";
     "rdssetup.exe";
     "iaudiosetup.exe";
-    "sch_to_db.exe"
+    "sch_to_db.exe";
+    "switchersetup.exe"
 )
 
 foreach ($file in $files) {
@@ -124,6 +125,6 @@ foreach ($file in $files) {
     Write-Host "Download: " -NoNewline
     Write-Host $url -BackgroundColor Gray -ForegroundColor Black
     $outfile = $folder+"\"+$latest+"_"+$file
-    Invoke-WebRequest $url -OutFile $outfile
+    Invoke-WebRequest $url -OutFile $outfile -Resume
     Write-Host "Saved to: $outfile"
 }

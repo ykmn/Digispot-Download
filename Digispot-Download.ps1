@@ -30,14 +30,34 @@ v1.01 2019-80-21 Parsing latest build number from
 v1.02 2020-06-18 Web-page parsing now Powershell Core compatible
 v1.03 2020-08-03 Some regex cleanup
 v1.04 2020-11-30 Build detection changes
+v1.05 2021-03-18 Added SJM download; optimizing
 Latest build: http://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
 Specific build: http://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
 #>
 
 [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8")
 [String]$latest = ""
+function Get-FilesFromURL {
+    param (
+      [string[]]$array = "",
+      [string]$urlPrefix,
+      [string]$outPrefix
+    )
+    # Foreach array iterate, write to host on a new line.
+    $array | ForEach-Object {
+#        Write-Host "Iterate content: $_"  }
+        #https://redmine.digispot.ru/Distributives/2.17.0/mdb_update.sql
+        [string]$file = $_
+        $url = $urlPrefix+$file
+        Write-Host "Download: " -NoNewline
+        Write-Host $url -BackgroundColor Gray -ForegroundColor Black
+        $outfile = $outPrefix+$file
+        Invoke-WebRequest $url -OutFile $outfile -Resume
+        Write-Host "Saved to: $outfile"
+    }
+}
 
-Write-Host "`nDigispot-Download v1.04" -ForegroundColor Yellow
+Write-Host "`nDigispot-Download v1.05" -ForegroundColor Yellow
 Write-Host "Batch download Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/"
 Write-Host "Available versions: 2.16.3; 2.17.0; 2.17.2; 2.17.3"
 
@@ -63,14 +83,17 @@ $url = Invoke-WebRequest -Uri https://redmine.digispot.ru/projects/digispot/wiki
 $pageheaders = @($url.Content.split('<') | Where-Object {$_ -match $pattern}) -replace '.*>'
 [string]$latest = $pageheaders[0] -match $pattern
 $latest = $Matches[0]
+[string]$latestD3 = $pageheaders[1] -match $pattern
+$latestD3 = $Matches[0]
 
 if (($latest -eq "") -or ($latest -eq $null)) {
     Write-Host Latest build version is not detected.
     $latest = $v
+    $latestD3 = $v
 } else {
-    Write-Host Detected $latest as latest build.
+    Write-Host Detected $latest as latest D2 build.
+    Write-Host Detected $latestD3 as latest D3 build.
 }
-
 
 $folder = "djin "+$latest
 Write-Host `nCreating folder: ./$folder
@@ -90,8 +113,13 @@ $files = @(
     "mdb_mp_update.sql";
     "3_mdb_media_reports.sql"
 )
+$urlPrefix = "http://redmine.digispot.ru/Distributives/"+$v+"/"
+$outPrefix = $folder+"\"+$latest+"_"
+Get-FilesFromURL $files $urlPrefix $outPrefix
 
+<#
 foreach ($file in $files) {
+    #https://redmine.digispot.ru/Distributives/2.17.0/mdb_update.sql
     $url = "http://redmine.digispot.ru/Distributives/"+$v+"/"+$file
     Write-Host "Download: " -NoNewline
     Write-Host $url -BackgroundColor Gray -ForegroundColor Black
@@ -99,6 +127,7 @@ foreach ($file in $files) {
     Invoke-WebRequest $url -OutFile $outfile -Resume
     Write-Host "Saved to: $outfile"
 }
+#>
 
 $files = @(
     "djinsetup.exe";
@@ -115,8 +144,17 @@ $files = @(
     "sch_to_db.exe";
     "switchersetup.exe"
 )
+if ($latest -eq $v) { # build doesn't detected, get latest
+    $urlPrefix = "http://redmine.digispot.ru/Distributives/"+$v+"/"+$file
+} else { # build detected, get specific
+    $urlPrefix = "http://redmine.digispot.ru/Distributives/"+$v+"/old/"+$latest+"/"+$file
+}
+$outPrefix = $folder+"\"+$latest+"_"
+Get-FilesFromURL $files $urlPrefix $outPrefix
 
+<#
 foreach ($file in $files) {
+    #http://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
     if ($latest -eq $v) { # build doesn't detected, get latest
         $url = "http://redmine.digispot.ru/Distributives/"+$v+"/"+$file
     } else { # build detected, get specific
@@ -128,3 +166,25 @@ foreach ($file in $files) {
     Invoke-WebRequest $url -OutFile $outfile -Resume
     Write-Host "Saved to: $outfile"
 }
+#>
+
+$files = @(
+    "CompleteSetup.exe";
+    "D3.NjmComplete.exe"
+)
+$urlPrefix = "http://redmine.digispot.ru/Distributives/D3/"+$v+"/"
+$outPrefix = $folder+"\"+$latestD3+"_"
+Get-FilesFromURL $files $urlPrefix $outPrefix
+
+<#
+foreach ($file in $files) {
+    #https://redmine.digispot.ru/Distributives/D3/2.17.0/CompleteSetup.exe
+    #https://redmine.digispot.ru/Distributives/D3/2.17.0/D3.NjmComplete.exe
+    $url = "http://redmine.digispot.ru/Distributives/D3/"+$v+"/"+$file
+    Write-Host "Download: " -NoNewline
+    Write-Host $url -BackgroundColor Gray -ForegroundColor Black
+    $outfile = $folder+"\"+$latestD3+"_"+$file
+    Invoke-WebRequest $url -OutFile $outfile -Resume
+    Write-Host "Saved to: $outfile"
+}
+#>

@@ -49,11 +49,11 @@ function Get-FilesFromURL {
         #https://redmine.digispot.ru/Distributives/2.17.0/mdb_update.sql
         [string]$file = $_
         $url = $urlPrefix+$file
-        Write-Host "Download: " -NoNewline
+        Write-Host "`nDownload: " -NoNewline
         Write-Host $url -BackgroundColor Gray -ForegroundColor Black
         $outfile = $outPrefix+$file
         Invoke-WebRequest $url -OutFile $outfile -Resume
-        Write-Host "Saved to: $outfile"
+        Write-Host "`nSaved to: $outfile"
     }
 }
 
@@ -74,39 +74,44 @@ switch ($v) {
 
 $v1 = $v.Replace(".","-")
 
-Write-Host `nLooking into https://redmine.digispot.ru/projects/digispot/wiki/Версии_ПО_Digispot
+Write-Host "`nLooking into https://redmine.digispot.ru/projects/digispot/wiki/Версии_ПО_Digispot"
 $url = Invoke-WebRequest -Uri https://redmine.digispot.ru/projects/digispot/wiki/%D0%92%D0%B5%D1%80%D1%81%D0%B8%D0%B8_%D0%9F%D0%9E_Digispot
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-17-0
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-3
 # redmine.digispot.ru/projects/digispot/wiki/История_изменений_в_поколении_2-16-2
 
+<# Expecting:
+D2 - 2.17.0.210
+D3 - 2.17.0.131
+#>
 $pageheaders = @($url.Content.split('<') | Where-Object {$_ -match $pattern}) -replace '.*>'
 [string]$latest = $pageheaders[0] -match $pattern
 $latest = $Matches[0]
 [string]$latestD3 = $pageheaders[1] -match $pattern
 $latestD3 = $Matches[0]
 
-if (($latest -eq "") -or ($latest -eq $null)) {
-    Write-Host Latest build version is not detected.
+if (($latest -eq "") -or ($null -eq $latest)) {
+    Write-Host "Latest build version is not detected."
     $latest = $v
     $latestD3 = $v
 } else {
-    Write-Host Detected $latest as latest D2 build.
-    Write-Host Detected $latestD3 as latest D3 build.
+    Write-Host "Detected $latest as latest D2 build."
+    Write-Host "Detected $latestD3 as latest D3 build."
 }
 
 $folder = "djin "+$latest
-Write-Host `nCreating folder: ./$folder
+Write-Host "`nCreating folder: ./$folder"
 New-Item -Path $folder -Force -ItemType Directory | Out-Null
 
-Write-Host Downloading latest build $latest
+Write-Host "Downloading latest build $latest"
 $url = "https://redmine.digispot.ru/projects/digispot/wiki/%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9_%D0%B2_%D0%BF%D0%BE%D0%BA%D0%BE%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8_"+$v1
 Write-Host "Download: " -NoNewline
 Write-Host "Changes_$latest.html" -BackgroundColor Gray -ForegroundColor Black
 $outfile = $folder+"\"+$latest+"_Changes.html"
 Invoke-WebRequest $url -OutFile $outfile
-Write-Host "Saved to: $outfile"
+Write-Host "`nSaved to: $outfile"
 
+# Download SQL templates
 $files = @(
     "mdb_create.sql";
     "mdb_update.sql";
@@ -117,18 +122,8 @@ $urlPrefix = "http://redmine.digispot.ru/Distributives/"+$v+"/"
 $outPrefix = $folder+"\"+$latest+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix
 
-<#
-foreach ($file in $files) {
-    #https://redmine.digispot.ru/Distributives/2.17.0/mdb_update.sql
-    $url = "http://redmine.digispot.ru/Distributives/"+$v+"/"+$file
-    Write-Host "Download: " -NoNewline
-    Write-Host $url -BackgroundColor Gray -ForegroundColor Black
-    $outfile = $folder+"\"+$latest+"_"+$file
-    Invoke-WebRequest $url -OutFile $outfile -Resume
-    Write-Host "Saved to: $outfile"
-}
-#>
 
+# Download executables
 $files = @(
     "djinsetup.exe";
     "ddbsetup.exe";
@@ -152,22 +147,8 @@ if ($latest -eq $v) { # build doesn't detected, get latest
 $outPrefix = $folder+"\"+$latest+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix
 
-<#
-foreach ($file in $files) {
-    #http://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
-    if ($latest -eq $v) { # build doesn't detected, get latest
-        $url = "http://redmine.digispot.ru/Distributives/"+$v+"/"+$file
-    } else { # build detected, get specific
-        $url = "http://redmine.digispot.ru/Distributives/"+$v+"/old/"+$latest+"/"+$file
-    }
-    Write-Host "Download: " -NoNewline
-    Write-Host $url -BackgroundColor Gray -ForegroundColor Black
-    $outfile = $folder+"\"+$latest+"_"+$file
-    Invoke-WebRequest $url -OutFile $outfile -Resume
-    Write-Host "Saved to: $outfile"
-}
-#>
 
+# Download SJM
 $files = @(
     "CompleteSetup.exe";
     "D3.NjmComplete.exe"
@@ -175,16 +156,3 @@ $files = @(
 $urlPrefix = "http://redmine.digispot.ru/Distributives/D3/"+$v+"/"
 $outPrefix = $folder+"\"+$latestD3+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix
-
-<#
-foreach ($file in $files) {
-    #https://redmine.digispot.ru/Distributives/D3/2.17.0/CompleteSetup.exe
-    #https://redmine.digispot.ru/Distributives/D3/2.17.0/D3.NjmComplete.exe
-    $url = "http://redmine.digispot.ru/Distributives/D3/"+$v+"/"+$file
-    Write-Host "Download: " -NoNewline
-    Write-Host $url -BackgroundColor Gray -ForegroundColor Black
-    $outfile = $folder+"\"+$latestD3+"_"+$file
-    Invoke-WebRequest $url -OutFile $outfile -Resume
-    Write-Host "Saved to: $outfile"
-}
-#>

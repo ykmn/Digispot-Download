@@ -6,7 +6,7 @@
     you did not accept the terms of the license agreement, you are not
     authorized to use this sample source code.
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
     THIS CODE IS PROVIDED "AS IS" WITH NO WARRANTIES.
     
 .SYNOPSIS
@@ -31,8 +31,9 @@ v1.02 2020-06-18 Web-page parsing now Powershell Core compatible
 v1.03 2020-08-03 Some regex cleanup
 v1.04 2020-11-30 Build detection changes
 v1.05 2021-03-18 Added SJM download; optimizing
-Latest build: http://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
-Specific build: http://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
+v1.06 2022-01-12 Move links from http to https; check for PowerShell Core; always download latest build instead of specific; added D2Matrix download.
+Latest build: https://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
+Specific build: https://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
 #>
 
 [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8")
@@ -57,9 +58,15 @@ function Get-FilesFromURL {
     }
 }
 
-Write-Host "`nDigispot-Download v1.05" -ForegroundColor Yellow
+Write-Host "`nDigispot-Download v1.06" -ForegroundColor Yellow
 Write-Host "Batch download Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/"
 Write-Host "Available versions: 2.16.3; 2.17.0; 2.17.2; 2.17.3"
+if ($PSVersionTable.PSEdition -eq "Core") {
+    Write-Host "PowerShell Core detected`n"
+} else {
+    Write-Host "PowerShell Core is not detected. Please run script in PS Core!`n" -ForegroundColor Red
+}
+
 
 $v = Read-Host -Prompt "Please enter version for download [Press Enter for 2.17.0 or Ctrl+C for exit]"
 switch ($v) {
@@ -118,7 +125,7 @@ $files = @(
     "mdb_mp_update.sql";
     "3_mdb_media_reports.sql"
 )
-$urlPrefix = "http://redmine.digispot.ru/Distributives/"+$v+"/"
+$urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/"
 $outPrefix = $folder+"\"+$latest+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix
 
@@ -137,13 +144,18 @@ $files = @(
     "rdssetup.exe";
     "iaudiosetup.exe";
     "sch_to_db.exe";
-    "switchersetup.exe"
+    "switchersetup.exe";
+    "d2matrixsetup.exe";
+    "d2matrix_client_setup.exe"
 )
+$urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/"+$file
+<# # Leave specific build download for future reconsideration...
 if ($latest -eq $v) { # build doesn't detected, get latest
-    $urlPrefix = "http://redmine.digispot.ru/Distributives/"+$v+"/"+$file
+    $urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/"+$file
 } else { # build detected, get specific
-    $urlPrefix = "http://redmine.digispot.ru/Distributives/"+$v+"/old/"+$latest+"/"+$file
+    $urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/old/"+$latest+"/"+$file
 }
+#>
 $outPrefix = $folder+"\"+$latest+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix
 
@@ -153,6 +165,6 @@ $files = @(
     "CompleteSetup.exe";
     "D3.NjmComplete.exe"
 )
-$urlPrefix = "http://redmine.digispot.ru/Distributives/D3/"+$v+"/"
+$urlPrefix = "https://redmine.digispot.ru/Distributives/D3/"+$v+"/"
 $outPrefix = $folder+"\"+$latestD3+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix

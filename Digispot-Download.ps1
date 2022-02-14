@@ -65,6 +65,7 @@ Write-Host "Batch download Digispot II packages from https://redmine.digispot.ru
 Write-Host "Available versions: 2.16.3; 2.17.0; 2.17.2; 2.17.3"
 if ($PSVersionTable.PSEdition -eq "Core") {
     Write-Host "PowerShell Core detected`n"
+    $pscore = $true
 } else {
     Write-Host "PowerShell Core is not detected. Please run script in PS Core!`n" -ForegroundColor Red
 }
@@ -175,9 +176,13 @@ Get-FilesFromURL $files $urlPrefix $outPrefix
 $files = @(
     "LicenceManagerComplete.exe";
     "DigispotAPIServiceSetup.exe";
-    "ru-RU/DigispotLicenceService.msi"
 )
 $urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/"+$file
+$outPrefix = $folder+"\"+$latest+"_"
+Get-FilesFromURL $files $urlPrefix $outPrefix
+# and last one from non-standard path
+$files = "DigispotLicenceService.msi"
+$urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/ru-RU/"
 $outPrefix = $folder+"\"+$latest+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix
 

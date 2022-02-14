@@ -31,7 +31,9 @@ v1.02 2020-06-18 Web-page parsing now Powershell Core compatible
 v1.03 2020-08-03 Some regex cleanup
 v1.04 2020-11-30 Build detection changes
 v1.05 2021-03-18 Added SJM download; optimizing
-v1.06 2022-01-12 Move links from http to https; check for PowerShell Core; always download latest build instead of specific; added D2Matrix download.
+v1.06 2022-02-14 Move links from http to https; check for PowerShell Core;
+                 always download latest build instead of specific; added D2Matrix download;
+                 default download: 2.17.2
 Latest build: https://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
 Specific build: https://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
 #>
@@ -68,15 +70,15 @@ if ($PSVersionTable.PSEdition -eq "Core") {
 }
 
 
-$v = Read-Host -Prompt "Please enter version for download [Press Enter for 2.17.0 or Ctrl+C for exit]"
+$v = Read-Host -Prompt "Please enter version for download [Press Enter for 2.17.2 or Ctrl+C for exit]"
 switch ($v) {
     "2.16.3" { $pattern = [Regex]::new('2\.16\.3\.*\d\d+\d?') }
     "2.17.0" { $pattern = [Regex]::new('2\.17\.0\.*?\d{2,3}') }
     "2.17.2" { $pattern = [Regex]::new('2\.17\.2\.*?\d{2,3}') }
     "2.17.3" { $pattern = [Regex]::new('2\.17\.3\.*?\d{2,3}') }
-    $null    { $v = "2.17.0"; $pattern = [Regex]::new('2\.17\.0\.*?\d{2,3}') }
-    ""       { $v = "2.17.0"; $pattern = [Regex]::new('2\.17\.0\.*?\d{2,3}') }
-    DEFAULT  { $v = "2.17.0"; $pattern = [Regex]::new('2\.17\.0\.*?\d{2,3}'); Write-Host "Sorry but $v is not available. Downloading latest 2.17.0" }
+    $null    { $v = "2.17.2"; $pattern = [Regex]::new('2\.17\.2\.*?\d{2,3}') }
+    ""       { $v = "2.17.2"; $pattern = [Regex]::new('2\.17\.2\.*?\d{2,3}') }
+    DEFAULT  { $v = "2.17.2"; $pattern = [Regex]::new('2\.17\.2\.*?\d{2,3}'); Write-Host "Sorry but $v is not available. Downloading latest 2.17.0" }
 }
 
 $v1 = $v.Replace(".","-")
@@ -168,3 +170,14 @@ $files = @(
 $urlPrefix = "https://redmine.digispot.ru/Distributives/D3/"+$v+"/"
 $outPrefix = $folder+"\"+$latestD3+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix
+
+# Download extra 2.17.2 files
+$files = @(
+    "LicenceManagerComplete.exe";
+    "DigispotAPIServiceSetup.exe";
+    "ru-RU/DigispotLicenceService.msi"
+)
+$urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/"+$file
+$outPrefix = $folder+"\"+$latest+"_"
+Get-FilesFromURL $files $urlPrefix $outPrefix
+

@@ -109,6 +109,9 @@ if (($latest -eq "") -or ($null -eq $latest)) {
     Write-Host "Detected $latestD3 as latest D3 build."
 }
 
+<# Хочу конкретную версию! #>
+# $latest = "2.17.2.179"
+
 $folder = "djin "+$latest
 Write-Host "`nCreating folder: ./$folder"
 New-Item -Path $folder -Force -ItemType Directory | Out-Null

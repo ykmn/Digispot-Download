@@ -34,6 +34,7 @@ v1.05 2021-03-18 Added SJM download; optimizing
 v1.06 2022-02-14 Move links from http to https; check for PowerShell Core;
                  always download latest build instead of specific; added D2Matrix download;
                  default download: 2.17.2
+v1.07 2022-08-01 Create update.info for Digispot auto-update mechanism
 Latest build: https://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
 Specific build: https://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
 #>
@@ -60,7 +61,7 @@ function Get-FilesFromURL {
     }
 }
 
-Write-Host "`nDigispot-Download v1.06" -ForegroundColor Yellow
+Write-Host "`nDigispot-Download v1.07" -ForegroundColor Yellow
 Write-Host "Batch download Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/"
 Write-Host "Available versions: 2.16.3; 2.17.0; 2.17.2; 2.17.3"
 if ($PSVersionTable.PSEdition -eq "Core") {
@@ -115,7 +116,8 @@ if (($latest -eq "") -or ($null -eq $latest)) {
 $folder = "djin "+$latest
 Write-Host "`nCreating folder: ./$folder"
 New-Item -Path $folder -Force -ItemType Directory | Out-Null
-
+$latest | Out-File $folder"\update.info"
+Write-Host "New update.info for $latest created."
 Write-Host "Downloading latest build $latest"
 $url = "https://redmine.digispot.ru/projects/digispot/wiki/%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9_%D0%B2_%D0%BF%D0%BE%D0%BA%D0%BE%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8_"+$v1
 Write-Host "Download: " -NoNewline

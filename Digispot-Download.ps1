@@ -35,6 +35,8 @@ v1.06 2022-02-14 Move links from http to https; check for PowerShell Core;
                  always download latest build instead of specific; added D2Matrix download;
                  default download: 2.17.2
 v1.07 2022-08-01 Create update.info for Digispot auto-update mechanism
+v1.08 2025-08-15 Moving update.info to .\DLL folder to autocopy into
+                 installation folder
 Latest build: https://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
 Specific build: https://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
 #>
@@ -61,7 +63,7 @@ function Get-FilesFromURL {
     }
 }
 
-Write-Host "`nDigispot-Download v1.07" -ForegroundColor Yellow
+Write-Host "`nDigispot-Download v1.08" -ForegroundColor Yellow
 Write-Host "Batch download Digispot II packages from https://redmine.digispot.ru/projects/digispot/wiki/"
 Write-Host "Available versions: 2.16.3; 2.17.0; 2.17.2; 2.17.3"
 if ($PSVersionTable.PSEdition -eq "Core") {
@@ -93,21 +95,17 @@ $url = Invoke-WebRequest -Uri https://redmine.digispot.ru/projects/digispot/wiki
 
 <# Expecting:
 D2 - 2.17.0.210
-D3 - 2.17.0.131
 #>
 $pageheaders = @($url.Content.split('<') | Where-Object {$_ -match $pattern}) -replace '.*>'
-[string]$latest = $pageheaders[0] -match $pattern
+[string]$latest = $pageheaders[1] -match $pattern
 $latest = $Matches[0]
-[string]$latestD3 = $pageheaders[1] -match $pattern
-$latestD3 = $Matches[0]
 
 if (($latest -eq "") -or ($null -eq $latest)) {
     Write-Host "Latest build version is not detected."
     $latest = $v
-    $latestD3 = $v
 } else {
     Write-Host "Detected $latest as latest D2 build."
-    Write-Host "Detected $latestD3 as latest D3 build."
+#    Write-Host "Detected $latestD3 as latest D3 build."
 }
 
 <# Хочу конкретную версию! #>
@@ -116,8 +114,9 @@ if (($latest -eq "") -or ($null -eq $latest)) {
 $folder = "djin "+$latest
 Write-Host "`nCreating folder: ./$folder"
 New-Item -Path $folder -Force -ItemType Directory | Out-Null
-$latest | Out-File $folder"\update.info"
-Write-Host "New update.info for $latest created."
+New-Item -Path $folder"\DLL" -Force -ItemType Directory | Out-Null
+$latest | Out-File $folder"\DLL\update.info"
+Write-Host "New update.info for $latest created in .\DLL folder."
 Write-Host "Downloading latest build $latest"
 $url = "https://redmine.digispot.ru/projects/digispot/wiki/%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9_%D0%B2_%D0%BF%D0%BE%D0%BA%D0%BE%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8_"+$v1
 Write-Host "Download: " -NoNewline
@@ -174,7 +173,7 @@ $files = @(
     "D3.NjmComplete.exe"
 )
 $urlPrefix = "https://redmine.digispot.ru/Distributives/D3/"+$v+"/"
-$outPrefix = $folder+"\"+$latestD3+"_"
+$outPrefix = $folder+"\"+$latest+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix
 
 # Download extra 2.17.2 files

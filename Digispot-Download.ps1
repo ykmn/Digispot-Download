@@ -35,8 +35,9 @@ v1.06 2022-02-14 Move links from http to https; check for PowerShell Core;
                  always download latest build instead of specific; added D2Matrix download;
                  default download: 2.17.2
 v1.07 2022-08-01 Create update.info for Digispot auto-update mechanism
-v1.08 2025-08-15 Moving update.info to .\DLL folder to autocopy into
+v1.08 2024-08-15 Moving update.info to .\DLL folder to autocopy into
                  installation folder
+
 Latest build: https://redmine.digispot.ru/Distributives/2.17.0/djinsetup.exe
 Specific build: https://redmine.digispot.ru/Distributives/2.17.0/old/2.17.0.142/djinsetup.exe
 #>
@@ -176,17 +177,20 @@ $urlPrefix = "https://redmine.digispot.ru/Distributives/D3/"+$v+"/"
 $outPrefix = $folder+"\"+$latest+"_"
 Get-FilesFromURL $files $urlPrefix $outPrefix
 
-# Download extra 2.17.2 files
-$files = @(
-    "LicenceManagerComplete.exe";
-    "DigispotAPIServiceSetup.exe";
-)
-$urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/"+$file
-$outPrefix = $folder+"\"+$latest+"_"
-Get-FilesFromURL $files $urlPrefix $outPrefix
-# and last one from non-standard path
-$files = "DigispotLicenceService.msi"
-$urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/ru-RU/"
-$outPrefix = $folder+"\"+$latest+"_"
-Get-FilesFromURL $files $urlPrefix $outPrefix
 
+if ($v = "2.17.2") {
+    # Download extra 2.17.2 files
+    $files = @(
+        "LicenceManagerComplete.exe";
+        "DigispotAPIServiceSetup.exe";
+    )
+    $urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/"+$file
+    $outPrefix = $folder+"\"+$latest+"_"
+    Get-FilesFromURL $files $urlPrefix $outPrefix
+
+    # and last one from non-standard path
+    $files = "DigispotLicenceService.msi"
+    $urlPrefix = "https://redmine.digispot.ru/Distributives/"+$v+"/ru-RU/"
+    $outPrefix = $folder+"\"+$latest+"_"
+    Get-FilesFromURL $files $urlPrefix $outPrefix
+}

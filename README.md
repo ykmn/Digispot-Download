@@ -1,6 +1,11 @@
 # Digispot-Download
-Скрипт для загрузки полного набора приложений Digispot II со страницы дистрибутивов 
-================================================================
+![PowerShell](https://img.shields.io/badge/PowerShell-%235391FE.svg?style=for-the-badge&logo=powershell&logoColor=white)
+[![Licence](https://img.shields.io/github/license/ykmn/ff-Logger?style=for-the-badge)](./LICENSE)
+![Microsoft Windows](https://img.shields.io/badge/Microsoft-Windows-%FF5F91FF.svg?style=for-the-badge&logo=Microsoft%20Windows&logoColor=white)
+
+
+## Скрипт для загрузки полного набора приложений Digispot II со страницы дистрибутивов 
+
 Roman Ermakov <r.ermakov@emg.fm>
 
 v1.08 2024-08-15 Файл update.info с текущей версией Digispot сохраняется в папку DLL\, что позволяет автоматически копировать его в установочную папку при инсталляции/обновлении.

@@ -3,7 +3,7 @@
 [![Licence](https://img.shields.io/github/license/ykmn/ff-Logger?style=for-the-badge)](./LICENSE)
 ![Microsoft Windows](https://img.shields.io/badge/Microsoft-Windows-%FF5F91FF.svg?style=for-the-badge&logo=Microsoft%20Windows&logoColor=white)
 
-> 2024.08.15 Roman Ermakov <r.ermakov@emg.fm>
+> 2025.02.10 Roman Ermakov <r.ermakov@emg.fm>
 
 ## Скрипт для загрузки полного набора приложений Digispot II со ["Страницы дистрибутивов"][1]
 
@@ -15,6 +15,8 @@
 * 2.16.3 (ограниченная поддержка)
 
 ### История:
+
+v1.10 2025-02-10 Добавлен дистрибутив сервиса AudioQuality.
 
 v1.08 2024-08-15 Файл update.info с текущей версией Digispot сохраняется в папку DLL\, что позволяет автоматически копировать его в установочную папку при инсталляции/обновлении.
 
